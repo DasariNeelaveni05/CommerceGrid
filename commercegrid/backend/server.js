@@ -8,6 +8,9 @@ const rateLimit = require('express-rate-limit');
 const { connectDB, sequelize } = require('./config/db');
 const { errorHandler, notFound } = require('./middlewares/errorHandler');
 
+// Ensure all models and associations are loaded before sync
+require('./models/index');
+
 // Import routes
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
@@ -19,7 +22,7 @@ const app = express();
 
 // ── Connect to DB ──────────────────────────────────────────────
 connectDB().then(() => {
-  sequelize.sync({ alter: true }).then(async () => {
+  sequelize.sync().then(async () => {
     console.log('✅ Database models synced successfully');
     // Auto-seed check
     try {
